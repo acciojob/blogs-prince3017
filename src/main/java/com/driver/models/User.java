@@ -1,21 +1,31 @@
 package com.driver.models;
 
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "user")
-public
-class User {
+@Table(name="user")
+public class User{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    String username;
-    String password;
-    String firstName = "test";
-    String lastName = "test";
 
+    private String username;
+
+    private String password;
+
+    private String firstname;
+
+    private String lastname;
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private List<Blog> BlogList = new ArrayList<>();
+
+    public User() {
+    }
 
     public int getId() {
         return id;
@@ -41,41 +51,33 @@ class User {
         this.password = password;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getFirstname() {
+        return firstname;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getLastname() {
+        return lastname;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 
-    public List<Blog> getBlogs() {
-        return blogs;
+    public List<Blog> getBlogList() {
+        return BlogList;
     }
 
-    public void setBlogs(List<Blog> blogs) {
-        this.blogs = blogs;
+    public void setBlogList(List<Blog> BlogList) {
+        this.BlogList=BlogList;
     }
 
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Blog> blogs;
 
-    public User() {
-        blogs = new ArrayList<>();
-    }
 
-    public User(String username, String password) {
-        blogs = new ArrayList<>();
-        this.username = username;
-        this.password = password;
-    }
+
+
 }

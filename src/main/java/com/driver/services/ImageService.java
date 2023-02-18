@@ -1,10 +1,11 @@
 package com.driver.services;
 
 import com.driver.models.*;
-import com.driver.models.Image;
 import com.driver.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ImageService {
@@ -16,11 +17,17 @@ public class ImageService {
 
     public Image addImage(Integer blogId, String description, String dimensions){
         //add an image to the blog
+        Image image = new Image();
         Blog blog = blogRepository2.findById(blogId).get();
-        com.driver.models.Image image = new com.driver.models.Image(description, dimensions, blog);
-        imageRepository2.save(image);
-        blog.getImages().add(image);
+        image.setDescription(description);
+        image.setDimensions(dimensions);
+        List<Image> imageList = blog.getImageList();
+        imageList.add(image);
+        blog.setImageList(imageList);
+        image.setBlog(blog);
+        blogRepository2.save(blog);
         return image;
+
     }
 
     public void deleteImage(Integer id){
@@ -29,10 +36,13 @@ public class ImageService {
 
     public int countImagesInScreen(Integer id, String screenDimensions) {
         //Find the number of images of given dimensions that can fit in a screen having `screenDimensions`
+        //num_images = floor(screen_width / image_width) * floor(screen_height / image_height)
         Image image = imageRepository2.findById(id).get();
-        String[] imageDimen = image.getDimensions().split("X");
-        String[] screenDimen = screenDimensions.split("X");
-        int result = (Integer.parseInt(screenDimen[0]) / Integer.parseInt(imageDimen[0])) * (Integer.parseInt(screenDimen[1]) / Integer.parseInt(imageDimen[1]));
-        return result;
+        String dim = image.getDimensions();
+        String[] imagearr = dim.split("X");
+        String[] screenarr = screenDimensions.split("X");
+        int count = (Integer.valueOf(screenarr[0])/Integer.valueOf(imagearr[0])) *(Integer.valueOf(screenarr[1])/Integer.valueOf(imagearr[1]));
+        return count;
+
     }
 }
